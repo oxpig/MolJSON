@@ -1,0 +1,235 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "atoms",
+    "bonds",
+    "charges",
+    "aromatic_n_h"
+  ],
+  "properties": {
+    "atoms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique atom id."
+          },
+          "element": {
+            "type": "string",
+            "enum": [
+              "*",
+              "H",
+              "He",
+              "Li",
+              "Be",
+              "B",
+              "C",
+              "N",
+              "O",
+              "F",
+              "Ne",
+              "Na",
+              "Mg",
+              "Al",
+              "Si",
+              "P",
+              "S",
+              "Cl",
+              "Ar",
+              "K",
+              "Ca",
+              "Sc",
+              "Ti",
+              "V",
+              "Cr",
+              "Mn",
+              "Fe",
+              "Co",
+              "Ni",
+              "Cu",
+              "Zn",
+              "Ga",
+              "Ge",
+              "As",
+              "Se",
+              "Br",
+              "Kr",
+              "Rb",
+              "Sr",
+              "Y",
+              "Zr",
+              "Nb",
+              "Mo",
+              "Tc",
+              "Ru",
+              "Rh",
+              "Pd",
+              "Ag",
+              "Cd",
+              "In",
+              "Sn",
+              "Sb",
+              "Te",
+              "I",
+              "Xe",
+              "Cs",
+              "Ba",
+              "La",
+              "Ce",
+              "Pr",
+              "Nd",
+              "Pm",
+              "Sm",
+              "Eu",
+              "Gd",
+              "Tb",
+              "Dy",
+              "Ho",
+              "Er",
+              "Tm",
+              "Yb",
+              "Lu",
+              "Hf",
+              "Ta",
+              "W",
+              "Re",
+              "Os",
+              "Ir",
+              "Pt",
+              "Au",
+              "Hg",
+              "Tl",
+              "Pb",
+              "Bi",
+              "Po",
+              "At",
+              "Rn",
+              "Fr",
+              "Ra",
+              "Ac",
+              "Th",
+              "Pa",
+              "U",
+              "Np",
+              "Pu",
+              "Am",
+              "Cm",
+              "Bk",
+              "Cf",
+              "Es",
+              "Fm",
+              "Md",
+              "No",
+              "Lr",
+              "Rf",
+              "Db",
+              "Sg",
+              "Bh",
+              "Hs",
+              "Mt",
+              "Ds",
+              "Rg",
+              "Cn",
+              "Nh",
+              "Fl",
+              "Mc",
+              "Lv",
+              "Ts",
+              "Og"
+            ],
+            "description": "Element symbol like 'C' or 'Cl', or '*' dummy atom."
+          }
+        },
+        "required": [
+          "id",
+          "element"
+        ]
+      }
+    },
+    "bonds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number",
+            "enum": [
+              0,
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "description": "Bond order. Aromatic bonds are 1.5. ZERO bonds are 0."
+          }
+        },
+        "required": [
+          "source",
+          "target",
+          "order"
+        ]
+      }
+    },
+    "charges": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Sparse list of NON-ZERO formal charges. Null means none.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "atom_id": {
+            "type": "string"
+          },
+          "formal_charge": {
+            "type": "integer",
+            "minimum": -5,
+            "maximum": 5
+          }
+        },
+        "required": [
+          "atom_id",
+          "formal_charge"
+        ]
+      }
+    },
+    "aromatic_n_h": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Sparse list of aromatic nitrogens with explicit hydrogen count. Null means none.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "atom_id": {
+            "type": "string"
+          },
+          "hcount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          }
+        },
+        "required": [
+          "atom_id",
+          "hcount"
+        ]
+      }
+    }
+  }
+}
