@@ -1,19 +1,27 @@
 # MolJSON
 
-Minimal MolJSON schema + RDKit conversion helpers.
+This repo contains the MolJSON structured-output JSON schema and related scripts. The MolJSON schema was designed to enable large language models to emit molecular structures with higher accuracy.
 
-Static JSON schema file: `schemas/moljson.schema.json`
+## What Is Included
 
-## API
+- Public API:
+  - `GetSchema() -> dict`
+  - `MolToJSON(mol, *, atom_id_style="element") -> dict`
+  - `MolFromJSON(moljson) -> rdkit.Chem.Mol`
+  - `CheckRoundTrip(mol, *, atom_id_style="element") -> (ok, in_smiles, out_smiles, moljson)`
+- Static schema file:
+  - `schemas/moljson.schema.json`
 
-```python
-from moljson import GetSchema, MolToJSON, MolFromJSON, CheckRoundTrip
+## Installation
+
+This repo is pip-installable via `pyproject.toml`.
+
+```bash
+git clone https://github.com/oxpig/MolJSON.git
+# or: git clone git@github.com:oxpig/MolJSON.git
+cd MolJSON
+pip install -e .
 ```
-
-- `GetSchema() -> dict`
-- `MolToJSON(mol, *, atom_id_style="element") -> dict`
-- `MolFromJSON(moljson) -> rdkit.Chem.Mol`
-- `CheckRoundTrip(mol, *, atom_id_style="element") -> (ok, in_smiles, out_smiles, moljson)`
 
 ## Quick Start
 
@@ -21,39 +29,42 @@ from moljson import GetSchema, MolToJSON, MolFromJSON, CheckRoundTrip
 from rdkit import Chem
 from moljson import GetSchema, MolToJSON, MolFromJSON, CheckRoundTrip
 
-# 1) Get JSON schema
+# 1) Get MolJSON schema
 schema = GetSchema()
 
 # 2) RDKit -> MolJSON
 mol = Chem.MolFromSmiles("c1c[nH]cc1")
-moljson = MolToJSON(mol)  # default atom ids: C1, C2, N1, ...
-
-# Optional atom id style: a1, a2, a3, ...
-moljson_a = MolToJSON(mol, atom_id_style="a")
+moljson = MolToJSON(mol)  # default atom IDs: C1, C2, N1, ...
+moljson_a = MolToJSON(mol, atom_id_style="a")  # a1, a2, a3, ...
 
 # 3) MolJSON -> RDKit
 mol2 = MolFromJSON(moljson)
-smiles2 = Chem.MolToSmiles(mol2, canonical=True)
 
-# 4) Round trip check (RDKit -> MolJSON -> RDKit)
+# 4) Round trip check
 ok, in_smiles, out_smiles, rt_json = CheckRoundTrip(mol)
 print(ok, in_smiles, out_smiles)
 ```
 
-## Notes
+## Format Notes
 
-- MolJSON keys are: `atoms`, `bonds`, optional `charges`, optional `aromatic_n_h`.
-- Empty optional fields are omitted on export.
-- Stereochemistry fields are currently unsupported and rejected on import.
+- MolJSON keys: `atoms`, `bonds`, optional `charges`, optional `aromatic_n_h`.
+- `MolToJSON` only emits `charges` and `aromatic_n_h` when they are present in the molecule.
 
-## OpenAI API Example (Structured MolJSON Output)
+If you want `MolToJSON` output to be schema-strict, add missing keys explicitly:
+
+```python
+moljson.setdefault("charges", None)
+moljson.setdefault("aromatic_n_h", None)
+```
+
+## OpenAI API Example
 
 ```python
 import json
 from openai import OpenAI
 from moljson import GetSchema
 
-client = OpenAI()  # uses OPENAI_API_KEY from env
+client = OpenAI()  # uses OPENAI_API_KEY
 schema = GetSchema()
 
 response = client.responses.create(
@@ -75,3 +86,11 @@ response = client.responses.create(
 moljson = json.loads(response.output_text)
 print(moljson)
 ```
+
+## Example Notebook
+
+See `examples/example.ipynb` for a minimal runnable walkthrough of:
+- loading and printing the schema
+- RDKit -> MolJSON conversion
+- MolJSON -> RDKit conversion
+- round-trip checks
