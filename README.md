@@ -1,16 +1,6 @@
 # MolJSON
 
-This repo contains the MolJSON structured-output JSON schema and related scripts. The MolJSON schema was designed to enable large language models to emit molecular structures with higher accuracy.
-
-## What Is Included
-
-- Public API:
-  - `GetSchema() -> dict`
-  - `MolToJSON(mol, *, atom_id_style="element") -> dict`
-  - `MolFromJSON(moljson) -> rdkit.Chem.Mol`
-  - `CheckRoundTrip(mol, *, atom_id_style="element") -> (ok, in_smiles, out_smiles, moljson)`
-- Static schema file:
-  - `schemas/moljson.schema.json`
+This repo contains the MolJSON structured-output JSON schema and related scripts. The MolJSON schema was designed to enable Large Language Models to interpret and emit molecular structures with higher accuracy.
 
 ## Installation
 
@@ -35,7 +25,6 @@ schema = GetSchema()
 # 2) RDKit -> MolJSON
 mol = Chem.MolFromSmiles("c1c[nH]cc1")
 moljson = MolToJSON(mol)  # default atom IDs: C1, C2, N1, ...
-moljson_a = MolToJSON(mol, atom_id_style="a")  # a1, a2, a3, ...
 
 # 3) MolJSON -> RDKit
 mol2 = MolFromJSON(moljson)
@@ -45,17 +34,16 @@ ok, in_smiles, out_smiles, rt_json = CheckRoundTrip(mol)
 print(ok, in_smiles, out_smiles)
 ```
 
-## Format Notes
+## Example Notebooks
+A simple walkthrough of the MolJSON functions can be found in `examples/walkthrough.ipynb`. This shows:
+- Loading and printing the schema
+- RDKit -> MolJSON conversion
+- MolJSON -> RDKit conversion
+- Round-trip checks
 
-- MolJSON keys: `atoms`, `bonds`, optional `charges`, optional `aromatic_n_h`.
-- `MolToJSON` only emits `charges` and `aromatic_n_h` when they are present in the molecule.
+For a minimal `OpenAI` API example see `examples/openai_moljson_example.ipynb`.
 
-If you want `MolToJSON` output to be schema-strict, add missing keys explicitly:
-
-```python
-moljson.setdefault("charges", None)
-moljson.setdefault("aromatic_n_h", None)
-```
+For a minimal `Anthropic` API example see `examples/anthropic_moljson_example.ipynb`.
 
 ## OpenAI API Example
 
@@ -87,10 +75,21 @@ moljson = json.loads(response.output_text)
 print(moljson)
 ```
 
-## Example Notebook
+## Format Notes
+MolJSON uses the keys `atoms`, `bonds`, `charges`, and `aromatic_n_h`. The `charges` and `aromatic_n_h` keys are only required for correct charge and valence assignment. The `MolToJSON` function only outputs `charges` and `aromatic_n_h` when they are present in the molecule. If you want `MolToJSON` to be schema-strict, you can add the missing keys explicitly with ```moljson.setdefault("charges", None)``` and ```moljson.setdefault("aromatic_n_h", None)```
 
-See `examples/example.ipynb` for a minimal runnable walkthrough of:
-- loading and printing the schema
-- RDKit -> MolJSON conversion
-- MolJSON -> RDKit conversion
-- round-trip checks
+## Paper Schema
+To ensure compatibility with both the OpenAI and Anthropic APIs, the MolJSON schema provided in this repo has been slightly modified. The original schema used in the paper can be found in `schemas/paper_moljson.schema.json`. The Anthropic API currently does not support minimum/maximum integer ranges, so the `charges` and `aromatic_n_h` keys now use an enumeration of integers. This is functionally equivalent and should not impact performance.
+
+## Citation
+
+```bibtex
+@article{runcie2026MolJSON,
+  title={},
+  author={Nicholas T. Runcie and Charlotte M. Deane and Fergus Imrie},
+  journal={},
+  year={2026},
+  doi={},
+  url={},
+}
+```
