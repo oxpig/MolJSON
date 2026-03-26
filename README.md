@@ -78,7 +78,7 @@ print(moljson)
 ## Format Notes
 By default `MolToJSON` will omit the `charges` and `aromatic_n_h` fields if they are not required for the molecule. If you want to keep these fields use `MolToJSON(mol, include_empty_fields=True)`. 
 
-To ensure compatibility with both the OpenAI and Anthropic APIs, the MolJSON schema provided in this repo has been slightly modified. The original schema used in the paper can be found in `schemas/paper_moljson.schema.json`. The Anthropic API currently does not support minimum/maximum integer ranges, so the fields inside `charges` and `aromatic_n_h` now use an enumeration of integers. This is functionally equivalent and should not impact performance.
+To ensure compatibility with both the OpenAI and Anthropic APIs, the MolJSON schema provided in this repo has been slightly modified. The original schema used in the paper can be found in `schemas/paper_moljson.schema.json`. The Anthropic API currently does not support minimum/maximum integer ranges, so the fields inside `charges` and `aromatic_n_h` now use an enumeration of integers. This is functionally equivalent and should not impact performance. Additionally, the original schema used in the paper allowed aromatic_n_h.hcount values up to 2; this has now been corrected so that only hcount = 1 is allowed.
 
 ## Citation
 
