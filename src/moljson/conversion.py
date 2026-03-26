@@ -107,8 +107,8 @@ def _apply_aromatic_n_h(
             raise ValueError(f"aromatic_n_h references unknown atom_id: {atom_id}")
         if not isinstance(hcount, int):
             raise ValueError("aromatic_n_h.hcount must be an integer")
-        if hcount < 1 or hcount > 2:
-            raise ValueError("aromatic_n_h.hcount must be in [1,2]")
+        if hcount != 1:
+            raise ValueError("aromatic_n_h.hcount must be 1")
 
         idx = id_to_idx[atom_id]
         atom = mol.GetAtomWithIdx(idx)
@@ -318,6 +318,10 @@ def MolToJSON(
             continue
         hcount = int(atom.GetTotalNumHs())
         if hcount > 0:
+            if hcount != 1:
+                raise ValueError(
+                    f"MolToJSON only supports aromatic_n_h.hcount=1. Got: {hcount}"
+                )
             aromatic_n_h.append({"atom_id": idx_to_id[idx], "hcount": hcount})
 
     moljson: Dict[str, Any] = {
