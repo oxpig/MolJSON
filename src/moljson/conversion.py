@@ -129,9 +129,9 @@ def MolFromJSON(moljson: Dict[str, Any]) -> Chem.Mol:
     """
     Build an RDKit molecule from MolJSON.
 
-    This keeps the same chemistry behavior as the verified ChemIO implementation,
-    including aromatic bond handling, ZERO bonds, sparse charges, sparse aromatic_n_h,
-    stereo-field rejection, and duplicate-edge checks.
+    Supported features include aromatic bond handling, ZERO bonds, sparse formal
+    charges, and sparse aromatic_n_h annotations. Stereochemistry fields are not
+    supported and duplicate or conflicting edges are rejected.
     """
     for forbidden in ("alkene_stereo", "atom_stereo", "bond_stereo", "stereo"):
         if forbidden in moljson:
@@ -182,10 +182,7 @@ def MolFromJSON(moljson: Dict[str, Any]) -> Chem.Mol:
                 f"charges.formal_charge must be int. Got: {type(formal_charge)}"
             )
         if formal_charge == 0:
-            raise ValueError(
-                f"charges entry for atom_id={atom_id} has formal_charge=0 "
-                f"(omit it instead)"
-            )
+            continue
         if formal_charge < -5 or formal_charge > 5:
             raise ValueError(
                 "charges.formal_charge out of supported range [-5,5]: "
@@ -244,17 +241,15 @@ def MolToJSON(
     """
     Convert an RDKit molecule to MolJSON.
 
-    Fixed behavior:
-    - atom_features=False
-    - sanitize=True
+    The input molecule is sanitized before conversion and explicit hydrogen atoms
+    are omitted from the serialized MolJSON representation.
 
-    atom_id_style options:
-    - 'element': C1, C2, N1, ...
-    - 'a': a1, a2, a3, ...
+    atom_id_style controls how atom identifiers are assigned:
+    - "element": element-based identifiers such as C1 and N1
+    - "a": sequential identifiers such as a1 and a2
 
-    include_empty_fields:
-    - False: omit empty 'charges' and 'aromatic_n_h'
-    - True: emit empty 'charges' and 'aromatic_n_h' as null
+    If include_empty_fields is False, empty charges and aromatic_n_h fields are
+    omitted. If True, they are emitted as null.
     """
     if mol is None:
         raise ValueError("mol is None")
