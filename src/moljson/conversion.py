@@ -235,18 +235,26 @@ def MolFromJSON(moljson: Dict[str, Any]) -> Chem.Mol:
     return mol
 
 
-def MolToJSON(mol: Chem.Mol, *, atom_id_style: str = "element") -> Dict[str, Any]:
+def MolToJSON(
+    mol: Chem.Mol,
+    *,
+    atom_id_style: str = "element",
+    include_empty_fields: bool = False,
+) -> Dict[str, Any]:
     """
     Convert an RDKit molecule to MolJSON.
 
     Fixed behavior:
     - atom_features=False
-    - drop_empty_fields=True
     - sanitize=True
 
     atom_id_style options:
     - 'element': C1, C2, N1, ...
     - 'a': a1, a2, a3, ...
+
+    include_empty_fields:
+    - False: omit empty 'charges' and 'aromatic_n_h'
+    - True: emit empty 'charges' and 'aromatic_n_h' as null
     """
     if mol is None:
         raise ValueError("mol is None")
@@ -319,10 +327,12 @@ def MolToJSON(mol: Chem.Mol, *, atom_id_style: str = "element") -> Dict[str, Any
         "aromatic_n_h": aromatic_n_h,
     }
 
-    # drop_empty_fields=True
     for key in ("charges", "aromatic_n_h"):
         if key in moljson and isinstance(moljson[key], list) and len(moljson[key]) == 0:
-            moljson.pop(key, None)
+            if include_empty_fields:
+                moljson[key] = None
+            else:
+                moljson.pop(key, None)
 
     return moljson
 
