@@ -76,10 +76,9 @@ print(moljson)
 ```
 
 ## Format Notes
-MolJSON uses the keys `atoms`, `bonds`, `charges`, and `aromatic_n_h`. The `charges` and `aromatic_n_h` keys are only required for correct charge and valence assignment. The `MolToJSON` function only outputs `charges` and `aromatic_n_h` when they are present in the molecule. If you want `MolToJSON` to be schema-strict, you can add the missing keys explicitly with ```moljson.setdefault("charges", None)``` and ```moljson.setdefault("aromatic_n_h", None)```
+By default `MolToJSON` will omit the `charges` and `aromatic_n_h` fields if they are not required for the molecule. If you want to keep these fields use `MolToJSON(mol, include_empty_fields=True)`. 
 
-## Paper Schema
-To ensure compatibility with both the OpenAI and Anthropic APIs, the MolJSON schema provided in this repo has been slightly modified. The original schema used in the paper can be found in `schemas/paper_moljson.schema.json`. The Anthropic API currently does not support minimum/maximum integer ranges, so the `charges` and `aromatic_n_h` keys now use an enumeration of integers. This is functionally equivalent and should not impact performance.
+To ensure compatibility with both the OpenAI and Anthropic APIs, the MolJSON schema provided in this repo has been slightly modified. The original schema used in the paper can be found in `schemas/paper_moljson.schema.json`. The Anthropic API currently does not support minimum/maximum integer ranges, so the fields inside `charges` and `aromatic_n_h` now use an enumeration of integers. This is functionally equivalent and should not impact performance.
 
 ## Citation
 
