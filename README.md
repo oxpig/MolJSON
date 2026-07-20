@@ -7,7 +7,7 @@ This repo contains the MolJSON structured-output JSON schema and related scripts
 Install the latest release from PyPI:
 
 ```bash
-python -m pip install moljson
+pip install moljson
 ```
 
 For local development, install the repository in editable mode:
