@@ -4,13 +4,19 @@ This repo contains the MolJSON structured-output JSON schema and related scripts
 
 ## Installation
 
-This repo is pip-installable via `pyproject.toml`.
+Install the latest release from PyPI:
+
+```bash
+python -m pip install moljson
+```
+
+For local development, install the repository in editable mode:
 
 ```bash
 git clone https://github.com/oxpig/MolJSON.git
 # or: git clone git@github.com:oxpig/MolJSON.git
 cd MolJSON
-pip install -e .
+python -m pip install -e .
 ```
 
 ## Quick Start

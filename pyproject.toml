@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,16 +8,27 @@ version = "0.1.0"
 description = "Minimal MolJSON schema and RDKit conversion helpers."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Nicholas T. Runcie" },
+  { name = "Fergus Imrie" },
+  { name = "Charlotte M. Deane" },
+]
+keywords = ["chemistry", "cheminformatics", "json", "molecular-representation", "rdkit"]
 dependencies = ["rdkit"]
 classifiers = [
-  "License :: OSI Approved :: BSD License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering :: Chemistry",
 ]
+
+[project.urls]
+Homepage = "https://github.com/oxpig/MolJSON"
+Repository = "https://github.com/oxpig/MolJSON"
+Issues = "https://github.com/oxpig/MolJSON/issues"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
